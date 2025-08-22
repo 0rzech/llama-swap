@@ -1,0 +1,85 @@
+name: Build Images
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        config:
+        - { backend: vulkan, platforms: linux/amd64 }
+      fail-fast: false
+
+    steps:
+      - name: Determine image build info
+        id: build-info
+        shell: bash
+        run: |
+          llama_swap_version="$(curl -s '${{ env.LLAMA_SWAP_URL }}' | jq -r '.tag_name' | sed 's/v//')"
+          llama_cpp_version="$(curl -s '${{ env.LLAMA_CPP_URL }}' | jq -r '.tag_name' | sed 's/b//')"
+
+          llama_swap_build_arg="LLAMA_SWAP_VERSION=${llama_swap_version}"
+          echo "llama_swap_build_arg=${llama_swap_build_arg}" >> "${GITHUB_OUTPUT}"
+          echo "llama_swap_build_arg=${llama_swap_build_arg}"
+
+          llama_cpp_build_arg="LLAMA_CPP_VERSION=${llama_cpp_version}"
+          echo "llama_cpp_build_arg=${llama_cpp_build_arg}" >> "${GITHUB_OUTPUT}"
+          echo "llama_cpp_build_arg=${llama_cpp_build_arg}"
+
+          version_tag="${{ env.TAG_PREFIX }}:v${llama_swap_version}-${{ matrix.config.backend }}-b${llama_cpp_version}"
+          echo "version_tag=${version_tag}" >> "${GITHUB_OUTPUT}"
+          echo "version_tag=${version_tag}"
+
+          backend_tag="${{ env.TAG_PREFIX }}:${{ matrix.config.backend }}"
+          echo "backend_tag=${backend_tag}" >> "${GITHUB_OUTPUT}"
+          echo "backend_tag=${backend_tag}"
+        env:
+          LLAMA_SWAP_URL: 'https://api.github.com/repos/mostlygeek/llama-swap/releases/latest'
+          LLAMA_CPP_URL: 'https://api.github.com/repos/ggml-org/llama.cpp/releases/latest'
+          TAG_PREFIX: 'ghcr.io/${{ github.repository }}'
+
+      - name: Clone repository
+        uses: actions/checkout@v5
+
+      - name: Set up buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push images
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          file: ${{ matrix.config.backend }}.Containerfile
+          build-args: |
+            ${{ steps.build-info.outputs.llama_swap_build_arg }}
+            ${{ steps.build-info.outputs.llama_cpp_build_arg }}
+          tags: |
+            ${{ steps.build-info.outputs.version_tag }}
+            ${{ steps.build-info.outputs.backend_tag }}
+          platforms: ${{ matrix.config.platforms }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  delete-untagged-images:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: llama-swap
+          package-type: container
+          delete-only-untagged-versions: true
