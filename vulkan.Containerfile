@@ -1,4 +1,7 @@
-FROM ghcr.io/almalinux/10-minimal:latest AS builder
+ARG IMAGE_REGISTRY=docker.io
+ARG IMAGE_BASE=${IMAGE_REGISTRY}/almalinux/10-minimal:latest
+
+FROM ${IMAGE_BASE} AS builder
 
 ARG LLAMA_SWAP_VERSION=154
 ARG LLAMA_CPP_VERSION=6248
@@ -16,7 +19,7 @@ RUN set -euo pipefail && \
     unzip -d llama.cpp -o llama.cpp.zip && \
     rm --verbose llama.cpp/build/bin/LICENSE*
 
-FROM ghcr.io/almalinux/10-minimal:latest
+FROM ${IMAGE_BASE}
 
 COPY config.example.yaml /app/config.yaml
 
