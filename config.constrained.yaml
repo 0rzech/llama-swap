@@ -1,0 +1,52 @@
+macros:
+  llama-serve: |
+    /app/llama-server
+    --port ${PORT}
+    --log-verbosity 0
+
+healthCheckTimeout: 600
+metricsMaxInMemory: 1000
+logLevel: info
+
+models:
+  gemma-3n-e2b:
+    cmd: |
+      ${llama-serve}
+      -hf unsloth/gemma-3n-E2B-it-GGUF:Q4_K_M
+      --ctx-size 4096
+      --n-predict 2048
+      --n-gpu-layers 99
+      --temp 0
+      --repeat-penalty 1
+      --top-k 64
+      --top-p 0.95
+      --min-p 0
+      --jinja
+    ttl: 1800
+
+  gemma-3n-e4b:
+    cmd: |
+      ${llama-serve}
+      -hf unsloth/gemma-3n-E4B-it-GGUF:Q4_K_M
+      --ctx-size 4096
+      --n-predict 2048
+      --n-gpu-layers 99
+      --temp 0
+      --repeat-penalty 1
+      --top-k 64
+      --top-p 0.95
+      --min-p 0
+      --jinja
+    ttl: 1800
+
+  nomic-embed-v2:
+    cmd: |
+      ${llama-serve}
+      -hf ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0
+      --ctx-size 2048
+      --ubatch-size 1024
+      --n-gpu-layers 99
+      --log-disable
+      --embedding
+    ttl: 300
+    unlisted: true

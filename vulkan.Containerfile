@@ -23,8 +23,6 @@ EOF
 
 FROM ${IMAGE_BASE}
 
-COPY config.example.yaml /app/config.yaml
-
 ARG LLAMA_SWAP_VERSION=154
 LABEL llama-swap-version="${LLAMA_SWAP_VERSION}"
 COPY --from=builder /llama-swap/* /app/
@@ -41,7 +39,7 @@ RUN <<EOF
     passwd --delete root
     usermod --expiredate 1 root
     useradd --user-group --create-home llama
-    mkdir '/home/llama/.cache'
+    mkdir --parents '/home/llama/.cache/llama.cpp'
     chown --recursive llama:llama '/home/llama'
     microdnf remove --assumeyes shadow-utils
     microdnf clean all
@@ -55,3 +53,6 @@ HEALTHCHECK CMD ["/usr/bin/curl", "--silent", "--show-error", "--fail", "http://
 
 ENTRYPOINT ["/app/llama-swap"]
 CMD ["-config", "/app/config.yaml"]
+
+ARG CONFIG_VARIANT=example
+COPY config.${CONFIG_VARIANT}.yaml /app/config.yaml
