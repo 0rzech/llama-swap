@@ -13,10 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 1
       matrix:
         config:
-        - { backend: vulkan, platforms: linux/amd64 }
-      fail-fast: false
+        - { backend: vulkan, platforms: linux/amd64, backend-variant: '-constrained', config-variant: constrained }
+        - { backend: vulkan, platforms: linux/amd64, backend-variant: '', config-variant: example }
 
     steps:
       - name: Determine image build info
@@ -34,11 +35,14 @@ jobs:
           echo "llama_cpp_build_arg=${llama_cpp_build_arg}" >> "${GITHUB_OUTPUT}"
           echo "llama_cpp_build_arg=${llama_cpp_build_arg}"
 
-          version_tag="${{ env.TAG_PREFIX }}:v${llama_swap_version}-${{ matrix.config.backend }}-b${llama_cpp_version}"
+          echo "llama_cpp_build_arg=${llama_cpp_build_arg}" >> "${GITHUB_OUTPUT}"
+          echo "llama_cpp_build_arg=${llama_cpp_build_arg}"
+
+          version_tag="${{ env.TAG_PREFIX }}:v${llama_swap_version}-${{ matrix.config.backend }}${{ matrix.config.backend-variant }}-b${llama_cpp_version}"
           echo "version_tag=${version_tag}" >> "${GITHUB_OUTPUT}"
           echo "version_tag=${version_tag}"
 
-          backend_tag="${{ env.TAG_PREFIX }}:${{ matrix.config.backend }}"
+          backend_tag="${{ env.TAG_PREFIX }}:${{ matrix.config.backend }}${{ matrix.config.backend-variant }}"
           echo "backend_tag=${backend_tag}" >> "${GITHUB_OUTPUT}"
           echo "backend_tag=${backend_tag}"
         env:
@@ -69,6 +73,7 @@ jobs:
             IMAGE_REGISTRY=${{ env.REGISTRY }}
             ${{ steps.build-info.outputs.llama_swap_build_arg }}
             ${{ steps.build-info.outputs.llama_cpp_build_arg }}
+            CONFIG_VARIANT=${{ matrix.config.config-variant }}
           tags: |
             ${{ steps.build-info.outputs.version_tag }}
             ${{ steps.build-info.outputs.backend_tag }}
