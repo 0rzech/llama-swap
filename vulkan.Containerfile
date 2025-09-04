@@ -23,6 +23,8 @@ EOF
 
 FROM ${IMAGE_BASE}
 
+COPY start.sh /app/
+
 ARG LLAMA_SWAP_VERSION=154
 LABEL llama-swap-version="${LLAMA_SWAP_VERSION}"
 COPY --from=builder /llama-swap/* /app/
@@ -51,7 +53,7 @@ USER llama
 
 HEALTHCHECK CMD ["/usr/bin/curl", "--silent", "--show-error", "--fail", "http://localhost:8080/health"]
 
-ENTRYPOINT ["/app/llama-swap"]
+ENTRYPOINT ["/app/start.sh"]
 CMD ["-config", "/app/config.yaml"]
 
 ARG CONFIG_VARIANT=example
