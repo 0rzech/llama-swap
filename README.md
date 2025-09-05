@@ -3,6 +3,10 @@
 This repository contains custom instructions to build [llama-swap](https://github.com/mostlygeek/llama-swap) container images.
 Currently, only the Vulkan backend is supported.
 
+Available tags:
+- `vulkan`, `v<llama-swap-version>-vulkan-b<llama.cpp-version>`: images using [config.example.yaml](config.example.yaml),
+- `vulkan-constrained`, `v<llama-swap-version>-vulkan-constrained-b<llama.cpp-version>`: images using [config.constrained.yaml](config.constrained.yaml).
+
 ### Description
 
 - The GitHub workflow runs daily to build images containing the latest llama-swap and [llama.cpp](https://github.com/ggml-org/llama.cpp) servers.
