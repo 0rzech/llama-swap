@@ -31,7 +31,7 @@ podman run \
     --rm \
     --device '/dev/kfd' \
     --device '/dev/dri/renderD128' \
-    -p 127.0.0.1:8080:8080 \
+    --publish 127.0.0.1:8080:8080 \
     --health-cmd '/usr/bin/curl --silent --show-error --fail http://localhost:8080/health' \
     ghcr.io/0rzech/llama-swap:vulkan
 ```
@@ -47,7 +47,7 @@ podman run \
     --security-opt no-new-privileges \
     --device '/dev/kfd' \
     --device '/dev/dri/renderD128' \
-    -p 127.0.0.1:8080:8080 \
+    --publish 127.0.0.1:8080:8080 \
     --mount "type=bind,src=${HOME}/.config/llama-swap.yaml,dst=/home/llama/config.yaml,relabel=private,ro=true" \
     --mount "type=bind,src=${HOME}/.cache/llama.cpp,dst=/home/llama/.cache/llama.cpp,relabel=private" \
     --health-cmd '/usr/bin/curl --silent --show-error --fail http://localhost:8080/health' \
