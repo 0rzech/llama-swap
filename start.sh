@@ -6,7 +6,7 @@ echo '==========='
 echo ' LLAMA.CPP '
 echo '==========='
 
-/app/llama-server --version
+/app/llama-server --version 2>&1
 
 echo '============'
 echo ' LLAMA-SWAP '
