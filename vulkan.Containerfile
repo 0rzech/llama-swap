@@ -9,16 +9,16 @@ ARG LLAMA_CPP_VERSION=6248
 RUN <<EOF
     set -euo pipefail
     microdnf upgrade --assumeyes --setopt=install_weak_deps=0
-    microdnf install --assumeyes --setopt=install_weak_deps=0 gzip tar unzip
+    microdnf install --assumeyes --setopt=install_weak_deps=0 gzip tar
     microdnf clean all
     curl --proto '=https' --location --proto-redir '=https' --max-redirs 1 "https://github.com/mostlygeek/llama-swap/releases/download/v${LLAMA_SWAP_VERSION}/llama-swap_${LLAMA_SWAP_VERSION}_linux_amd64.tar.gz" --output 'llama-swap.tar.gz'
-    mkdir 'llama-swap'
+    mkdir --verbose 'llama-swap'
     tar --extract --verbose --file 'llama-swap.tar.gz' --directory 'llama-swap'
     rm --verbose llama-swap/LICENSE* llama-swap/README*
-    curl --proto '=https' --location --proto-redir '=https' --max-redirs 1 "https://github.com/ggml-org/llama.cpp/releases/download/b${LLAMA_CPP_VERSION}/llama-b${LLAMA_CPP_VERSION}-bin-ubuntu-vulkan-x64.zip" --output 'llama.cpp.zip'
-    unzip -t 'llama.cpp.zip'
-    unzip -d 'llama.cpp' -o 'llama.cpp.zip'
-    rm --verbose llama.cpp/build/bin/LICENSE*
+    curl --proto '=https' --location --proto-redir '=https' --max-redirs 1 "https://github.com/ggml-org/llama.cpp/releases/download/b${LLAMA_CPP_VERSION}/llama-b${LLAMA_CPP_VERSION}-bin-ubuntu-vulkan-x64.tar.gz" --output 'llama-cpp.tar.gz'
+    mkdir --verbose 'llama-cpp'
+    tar --extract --verbose --file 'llama-cpp.tar.gz' --strip-components 1 --directory 'llama-cpp'
+    rm --verbose llama-cpp/LICENSE*
 EOF
 
 FROM ${IMAGE_BASE}
@@ -32,7 +32,7 @@ COPY --from=builder /llama-swap/* /app/
 ARG LLAMA_CPP_VERSION=6248
 LABEL llama-cpp-version="${LLAMA_CPP_VERSION}"
 LABEL llama-cpp-backend=vulkan
-COPY --from=builder /llama.cpp/build/bin/* /app/
+COPY --from=builder /llama-cpp/* /app/
 
 RUN <<EOF
     set -euo pipefail
