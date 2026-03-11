@@ -14,4 +14,4 @@ echo '============'
 
 /app/llama-swap --version
 
-exec /app/llama-swap "${@:1}"
+exec /app/llama-swap "${@}"
