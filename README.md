@@ -49,7 +49,7 @@ podman run \
     --device '/dev/dri/renderD128' \
     --publish 127.0.0.1:8080:8080 \
     --mount "type=bind,src=${HOME}/.config/llama-swap.yaml,dst=/home/llama/config.yaml,relabel=private,ro=true" \
-    --mount "type=bind,src=${HOME}/.cache/llama.cpp,dst=/home/llama/.cache/llama.cpp,relabel=private" \
+    --mount "type=bind,src=${HOME}/.cache/huggingface,dst=/home/llama/.cache/huggingface,relabel=private" \
     --health-cmd '/usr/bin/curl --silent --show-error --fail http://localhost:8080/health' \
     ghcr.io/0rzech/llama-swap:vulkan \
         -config '/home/llama/config.yaml'
@@ -80,7 +80,7 @@ AddDevice=/dev/kfd
 AddDevice=/dev/dri/renderD128
 
 Mount=type=bind,src=%h/.config/llama-swap.yaml,dst=/home/llama/config.yaml,relabel=private,ro=true
-Mount=type=bind,src=%h/.cache/llama.cpp,dst=/home/llama/.cache/llama.cpp,relabel=private
+Mount=type=bind,src=%h/.cache/huggingface,dst=/home/llama/.cache/huggingface,relabel=private
 
 [Service]
 Restart=always
