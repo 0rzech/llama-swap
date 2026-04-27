@@ -9,11 +9,11 @@ metricsMaxInMemory: 1000
 logLevel: info
 
 models:
-  gemma-3n-e2b:
-    name: Gemma 3n E2B
+  gemma-4-e2b:
+    name: Gemma 4 E2B
     cmd: |
       ${llama-serve}
-      -hf unsloth/gemma-3n-E2B-it-GGUF:Q4_K_M
+      -hf unsloth/gemma-4-E2B-it-GGUF:Q4_K_M
       --ctx-size 4096
       --n-predict 2048
       --n-gpu-layers 99
@@ -25,11 +25,11 @@ models:
       --jinja
     ttl: 1800
 
-  gemma-3n-e4b:
-    name: Gemma 3n E4B
+  gemma-4-e4b:
+    name: Gemma 4 E4B
     cmd: |
       ${llama-serve}
-      -hf unsloth/gemma-3n-E4B-it-GGUF:Q4_K_M
+      -hf unsloth/gemma-4-E4B-it-GGUF:Q4_K_M
       --ctx-size 4096
       --n-predict 2048
       --n-gpu-layers 99
