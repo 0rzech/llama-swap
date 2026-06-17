@@ -9,7 +9,7 @@ Available tags:
 
 ### Description
 
-- The GitHub workflow runs daily to build images containing the latest llama-swap and [llama.cpp](https://github.com/ggml-org/llama.cpp) servers.
+- The GitHub workflow runs weekly to build images containing the latest llama-swap and [llama.cpp](https://github.com/ggml-org/llama.cpp) servers.
 - The image is based on AlmaLinux 10 minimal.
 - The AlmaLinux base is updated during each image build.
 - The image has a disabled `root` account and password.
