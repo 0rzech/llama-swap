@@ -3,6 +3,17 @@ ARG IMAGE_BASE=${IMAGE_REGISTRY}/almalinux/10-minimal:latest
 
 FROM ${IMAGE_BASE} AS builder
 
+ARG IMAGE_TITLE
+LABEL org.opencontainers.image.title="${IMAGE_TITLE}"
+ARG IMAGE_DESCRIPTION
+LABEL org.opencontainers.image.description="${IMAGE_DESCRIPTION}"
+ARG IMAGE_AUTHORS
+LABEL org.opencontainers.image.authors="${IMAGE_AUTHORS}"
+ARG IMAGE_URL
+LABEL org.opencontainers.image.url="${IMAGE_URL}"
+ARG IMAGE_SOURCE
+LABEL org.opencontainers.image.source="${IMAGE_SOURCE}"
+
 ARG LLAMA_SWAP_VERSION=154
 ARG LLAMA_CPP_VERSION=6248
 
