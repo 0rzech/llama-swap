@@ -75,9 +75,9 @@ jobs:
             ${{ steps.build-info.outputs.llama_cpp_build_arg }}
             IMAGE_TITLE=Llama Swap
             IMAGE_DESCRIPTION=Custom Llama Swap Container Image
-            IMAGE_AUTHORS=Piotr Orzechowski [orzechowski.tech]
-            IMAGE_URL=https://codeberg.org/0rzech/llama-swap
-            IMAGE_SOURCE=https://codeberg.org/0rzech/llama-swap
+            IMAGE_AUTHORS=Piotr Orzechowski
+            IMAGE_URL=https://github.com/0rzech/llama-swap/pkgs/container/llama-swap
+            IMAGE_SOURCE=https://github.com/0rzech/llama-swap
             CONFIG_VARIANT=${{ matrix.config.config-variant }}
           tags: |
             ${{ steps.build-info.outputs.version_tag }}
