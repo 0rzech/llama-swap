@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           llama_swap_version="$(curl -s '${{ env.LLAMA_SWAP_URL }}' | jq -r '.tag_name' | sed 's/v//')"
-          llama_cpp_version="$(curl -s '${{ env.LLAMA_CPP_URL }}' | jq -r '.tag_name' | sed 's/b//')"
+          llama_cpp_version="$(curl -s '${{ env.LLAMA_CPP_URL }}' | jq -r 'map(select(.prerelease == true)) | first | .tag_name' | sed 's/b//')"
 
           llama_swap_build_arg="LLAMA_SWAP_VERSION=${llama_swap_version}"
           echo "llama_swap_build_arg=${llama_swap_build_arg}" >> "${GITHUB_OUTPUT}"
@@ -47,7 +47,7 @@ jobs:
           echo "backend_tag=${backend_tag}"
         env:
           LLAMA_SWAP_URL: 'https://api.github.com/repos/mostlygeek/llama-swap/releases/latest'
-          LLAMA_CPP_URL: 'https://api.github.com/repos/ggml-org/llama.cpp/releases/latest'
+          LLAMA_CPP_URL: 'https://api.github.com/repos/ggml-org/llama.cpp/releases'
           TAG_PREFIX: '${{ env.REGISTRY }}/${{ github.repository }}'
 
       - name: Clone repository

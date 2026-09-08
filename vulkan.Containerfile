@@ -14,8 +14,8 @@ LABEL org.opencontainers.image.url="${IMAGE_URL}"
 ARG IMAGE_SOURCE
 LABEL org.opencontainers.image.source="${IMAGE_SOURCE}"
 
-ARG LLAMA_SWAP_VERSION=154
-ARG LLAMA_CPP_VERSION=6248
+ARG LLAMA_SWAP_VERSION=255
+ARG LLAMA_CPP_VERSION=10853
 
 RUN <<EOF
     set -euo pipefail
@@ -36,11 +36,11 @@ FROM ${IMAGE_BASE}
 
 COPY start.sh /app/
 
-ARG LLAMA_SWAP_VERSION=154
+ARG LLAMA_SWAP_VERSION=255
 LABEL llama-swap-version="${LLAMA_SWAP_VERSION}"
 COPY --from=builder /llama-swap/* /app/
 
-ARG LLAMA_CPP_VERSION=6248
+ARG LLAMA_CPP_VERSION=10853
 LABEL llama-cpp-version="${LLAMA_CPP_VERSION}"
 LABEL llama-cpp-backend=vulkan
 COPY --from=builder /llama-cpp/* /app/
