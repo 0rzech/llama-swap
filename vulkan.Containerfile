@@ -48,7 +48,7 @@ COPY --from=builder /llama-cpp/* /app/
 RUN <<EOF
     set -euo pipefail
     microdnf upgrade --assumeyes --setopt=install_weak_deps=0
-    microdnf install --assumeyes --setopt=install_weak_deps=0 libgomp shadow-utils vulkan-devel
+    microdnf install --assumeyes --setopt=install_weak_deps=0 libgomp mesa-vulkan-drivers shadow-utils vulkan-loader vulkan-tools
     passwd --delete root
     usermod --expiredate 1 root
     useradd --user-group --create-home llama
