@@ -1,4 +1,4 @@
-name: Build Images
+name: Images
 
 on:
   schedule:
@@ -10,6 +10,7 @@ env:
 
 jobs:
   build-and-push:
+    name: Build and push
     runs-on: ubuntu-latest
 
     strategy:
@@ -20,7 +21,7 @@ jobs:
         - { backend: vulkan, platforms: linux/amd64, backend-variant: '', config-variant: example }
 
     steps:
-      - name: Determine image build info
+      - name: Determine build info
         id: build-info
         shell: bash
         run: |
@@ -87,9 +88,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  delete-untagged-images:
+  delete-untagged:
+    name: Delete untagged
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
       - uses: actions/delete-package-versions@v5
@@ -97,3 +99,14 @@ jobs:
           package-name: llama-swap
           package-type: container
           delete-only-untagged-versions: true
+
+  delete-old:
+    name: Delete old
+    runs-on: ubuntu-slim
+
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: llama-swap
+          package-type: container
+          min-versions-to-keep: 100
